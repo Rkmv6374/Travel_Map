@@ -1,8 +1,9 @@
-=====
-Travel App
+
+# TravelMap
+
 Travel App is a MERN (MongoDB, Express, React, Node.js) web application designed to allow users to pin locations on a world map and store information about those locations. This application provides a platform for travelers to keep track of their visited places, plan their trips, and share their experiences with other travelers.
 
-**Features
+## Features
 
 User registration and login
 Profile management
@@ -11,7 +12,7 @@ Location search and filtering
 Location details page with photos and description
 Add new locations to the map
 
-**Technologies Used
+## Technologies Used
 MongoDB for the database
 Express for the web application framework
 React for the frontend
@@ -24,7 +25,7 @@ Install the dependencies by running npm install.
 Start the development server by running npm start.
 Open the application in your web browser at http://localhost:4040.
 
-**Contributing
+## Contributing
 Contributions are welcome! Please fork this repository and create a pull request with your changes.
 
 
