@@ -1,4 +1,4 @@
-#Travel App
+Travel App
 Travel App is a MERN (MongoDB, Express, React, Node.js) web application designed to allow users to pin locations on a world map and store information about those locations. This application provides a platform for travelers to keep track of their visited places, plan their trips, and share their experiences with other travelers.
 
 **Features
