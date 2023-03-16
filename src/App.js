@@ -5,13 +5,15 @@ import {Room,Star} from '@mui/icons-material';
 import "./App.css"
 import axios from 'axios'
 import {format} from 'timeago.js'
-
+import Registration from './components/register.jsx';
+import Login from './components/login.jsx';
 
 // axios is used to set all the pins fetch data 
 
 function App() {
-
-  const [username,setUsername] = React.useState("Aman_raj");
+   
+  const myStorage = window.localStorage;
+  const [username,setUsername] = React.useState(myStorage.getItem("user"));
   const [place,setPlace] = React.useState({
     lat:0,long:0
   });
@@ -23,6 +25,8 @@ function App() {
   const [open,setOpen] = React.useState(false);
    
   const  [pin,setPin] = React.useState([])
+  const [showRegister, setShowRegister] = React.useState(false);
+  const [showLogin, setShowLogin] = React.useState(false);
   
   const [viewState, setViewState] = React.useState({
     latitude: 37.7517,
@@ -32,6 +36,7 @@ function App() {
 
   const [showPopup, setShowPopup] = React.useState(true);
   const [currentplace, setCurrentplace] = React.useState(null);
+  const [currentlong, setCurrentlong] = React.useState(null);
 
   async function fetchpin(){
    try{ 
@@ -58,28 +63,27 @@ function App() {
 
   
 
-  const handlepointer = (id,lat,long)=>{
-    setCurrentplace(lat);
+  const handlepointer = (lat,long)=>{
+    setCurrentplace(lat); setCurrentlong(long);
     setViewState({...viewState,latitude:lat,longitude:long});
     // view state is generaly is the middle location of a screen
     
   }
 
-  
-  const handleAddClick = async(e)=>{
+  const handleLogout = () => {
+    setUsername(null);
+    myStorage.removeItem("user");
+  };  
 
-    // try{
-    // const data = e.lnglat; 
-    // console.log(data.lat);
-    //  const lati = data.lat; const longi = data.lng;
-    //  setPlace({lat:lati,long:longi});
-    //  console.log(place);
-    //  setOpen(true);}
-    //  catch(err)
-    //  {console.log(err);
-    //  }
-     
-     
+  const handleAddClick = async(e)=>{
+    console.log(e.lngLat);
+    
+     var lati = e.lngLat.lat; var longi = e.lngLat.lng;
+     console.log(longi);
+     setPlace({lat:lati,long:longi});
+     console.log(place);
+     setOpen(true);
+      
   }
 
   const handleSubmission=async(e)=>
@@ -94,8 +98,10 @@ function App() {
        };
        try{
        const callcreation =  await axios.post('/pin/location',pin_created);
+       console.log(callcreation);
        setPin([...pin,callcreation.data])
        setOpen(false);
+       const k = await fetchpin();
       }
        catch(err)
        {
@@ -106,68 +112,20 @@ function App() {
   
   return (
 
-    <div className="App">
+    <div className="App" style={{ height: "100vh", width: "100%" }}>
       <Map
       {...viewState}
       onMove={evt => setViewState(evt.viewState)}
       onDblClick={handleAddClick}
       transitionDuration="200"
-      style={{width: '100vw', height: '100vh'}}
+      width="100%"
+      height="100%"
       mapStyle="mapbox://styles/safak/cknndpyfq268f17p53nmpwira"
       mapboxAccessToken='pk.eyJ1Ijoic3BhdGVsMjEiLCJhIjoiY2xmOGxpNml2MDZicjNycGNmYm9tbTF5diJ9.gfeWOZFd5XiTcTJKkjccIg'
       
       >
 
-       {/* mark each and every pin of each person */}
-{/*         
-        {pin.map((p)=>(
-         if (isNaN(p.lat) || isNaN(p.long)) {
-           console.log('Invalid coordinates for pin');
-           return null;
-          }
-       return (
-      <>
-      <Marker longitude={p.long} latitude={p.lat} 
-        offsetLeft={-viewState.zoom*6}
-        offsetTop={-viewState.zoom*12}
-        anchor="bottom" color="red">
-
-         <Room style={{fontSize:viewState.zoom*12 , color:username===p.name?"tomato":"slateblue",
-                  cursor: "pointer",}}
-         onClick={()=>{handlepointer(p.name,p.lat,p.long);}}
-         
-
-         />
-        </Marker>
-        {p.name===currentplace && 
-        (<Popup longitude={p.long} latitude={p.lat}
-        anchor="left"
-        closeButton={true}
-        closeOnClick={false}
-        // onClose={()=>{setCurrentplace(null);}}
-        >
-       <div className="card">
-                  <label>Place</label>
-                  <h4 className="place">{p.title}</h4>
-                  <label>Review</label>
-                  <p className="desc">{p.desc}</p>
-                  <label>Rating</label>
-                  <div className="stars">
-                  {Array(p.rating).fill(<Star className="star" />)}
-                  </div>
-                  <label>Information</label>
-                  <span className="username">
-                    Created by  <b>{p.name}</b>
-                  </span>
-                  <span className="date">{format(p.createdAt)}</span>
-                </div>
-      </Popup>)}
-
-          </>
-    
-  );
-))}
-       */}
+       
 
 
   {pin.map((p) => {
@@ -184,20 +142,21 @@ function App() {
         offsetLeft={-viewState.zoom * 6}
         offsetTop={-viewState.zoom * 12}
         anchor="bottom"
-        color="red"
+        color='red'
       >
         <Room
           style={{
             fontSize: viewState.zoom * 12,
             color: username === p.name ? 'tomato' : 'slateblue',
-            cursor: 'pointer',
+            cursor: 'pointer'
+            
           }}
           onClick={() => {
-            handlepointer(p.name, p.lat, p.long);
+            handlepointer( p.lat, p.long);
           }}
         />
       </Marker>
-      {p.lat === currentplace && (
+      {p.lat === currentplace && p.long===currentlong && (
         <Popup
           longitude={p.long}
           latitude={p.lat}
@@ -230,7 +189,7 @@ function App() {
 
     {/* now we have to create a popup for when we click double on map  rating desc title*/}
 
-     { open &&(<>
+     { username !== null && open &&(<>
         <Popup 
         longitude={place.long} latitude={place.lat}
         anchor="left"
@@ -260,8 +219,45 @@ function App() {
         </Popup></>)
       
     } 
-
+    
+     {/* {username&&<button className='button logout'>Logout</button>}
+     {!username &&
+     <div className="buttons">
+     <button className='button register'
+     onClick={()=>{setShowRegister(true);}}
+     >Register</button>
+     <button className='button login' onClick={()=>{setShowLogin(true);}}>Login</button>
+     </div>} */}
+     
+     {username !==null ? (
+          <button className="button logout" onClick={handleLogout}>
+            Log out
+          </button>
+        ) : (
+          <div className="buttons">
+            <button className="button login" onClick={() => setShowLogin(true)}>
+              Log in
+            </button>
+            <button
+              className="button register"
+              onClick={() => setShowRegister(true)}
+            >
+              Register
+            </button>
+          </div>
+        )}
+    
+     {showRegister && <Registration setShowRegister={setShowRegister} />}
+     {showLogin && (
+          <Login
+            setShowLogin={setShowLogin}
+            setUsername={setUsername}
+            myStorage={myStorage}
+          />
+        )}
     </Map>
+
+   
     </div>
     
   );

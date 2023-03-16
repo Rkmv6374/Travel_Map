@@ -6,6 +6,7 @@
     justify-content: space-around;
   }
   
+  
   label {
     width: max-content;
     color: tomato;
@@ -84,6 +85,16 @@
     color: white;
     font-weight: 500;
     cursor: pointer;
+    
+  }
+
+  .register,.logout
+  {
+    background-color: tomato;
+  }
+  .login
+  {
+    background-color: teal;
   }
   
   .button:focus{
@@ -91,3 +102,14 @@
   }
   
  
+.logout,.buttons{
+  position: absolute;
+  top:10px;
+  right:15px;
+}
+
+.register
+{
+  margin:2px;
+
+}
