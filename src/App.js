@@ -40,8 +40,8 @@ function App() {
       method:'get',
       url:'/pin/getLocation'
     })
-    console.log(ds.data);
-    setPin(ds.data);
+    console.log(ds.data[0].about);
+    setPin(ds.data[0].about);
   }
    catch(err)
    {
@@ -59,19 +59,25 @@ function App() {
   
 
   const handlepointer = (id,lat,long)=>{
-    setCurrentplace(id);
+    setCurrentplace(lat);
     setViewState({...viewState,latitude:lat,longitude:long});
     // view state is generaly is the middle location of a screen
     
   }
 
-  const handleAddClick =(e)=>{
-    const data = e.lnglat; 
-    console.log(data.lat);
-     const lati = data.lat; const longi = data.lng;
-     setPlace({lat:lati,long:longi});
-     console.log(place);
-     setOpen(true);
+  
+  const handleAddClick = async(e)=>{
+
+    // try{
+    // const data = e.lnglat; 
+    // console.log(data.lat);
+    //  const lati = data.lat; const longi = data.lng;
+    //  setPlace({lat:lati,long:longi});
+    //  console.log(place);
+    //  setOpen(true);}
+    //  catch(err)
+    //  {console.log(err);
+    //  }
      
      
   }
@@ -113,11 +119,15 @@ function App() {
       >
 
        {/* mark each and every pin of each person */}
-        
+{/*         
         {pin.map((p)=>(
-          <>
-          {/* <pin key={pin.id} {...pin} /> */}
-          <Marker longitude={p.long} latitude={p.lat} 
+         if (isNaN(p.lat) || isNaN(p.long)) {
+           console.log('Invalid coordinates for pin');
+           return null;
+          }
+       return (
+      <>
+      <Marker longitude={p.long} latitude={p.lat} 
         offsetLeft={-viewState.zoom*6}
         offsetTop={-viewState.zoom*12}
         anchor="bottom" color="red">
@@ -129,12 +139,6 @@ function App() {
 
          />
         </Marker>
-
-        
-        
-    {/* // on clicking the pointer the onClick function will run and then their id is stored in current place and current place will be
-    equal to that id that will be open  */}
-
         {p.name===currentplace && 
         (<Popup longitude={p.long} latitude={p.lat}
         anchor="left"
@@ -160,8 +164,68 @@ function App() {
       </Popup>)}
 
           </>
-        ))}
-      
+    
+  );
+))}
+       */}
+
+
+  {pin.map((p) => {
+  if (isNaN(p.lat) || isNaN(p.long)) {
+    console.log('Invalid coordinates for pin');
+    return null;
+  }
+
+  return (
+    <>
+      <Marker
+        longitude={p.long}
+        latitude={p.lat}
+        offsetLeft={-viewState.zoom * 6}
+        offsetTop={-viewState.zoom * 12}
+        anchor="bottom"
+        color="red"
+      >
+        <Room
+          style={{
+            fontSize: viewState.zoom * 12,
+            color: username === p.name ? 'tomato' : 'slateblue',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            handlepointer(p.name, p.lat, p.long);
+          }}
+        />
+      </Marker>
+      {p.lat === currentplace && (
+        <Popup
+          longitude={p.long}
+          latitude={p.lat}
+          anchor="left"
+          closeButton={true}
+          closeOnClick={false}
+          // onClose={()=>{setCurrentplace(null);}}
+        >
+          <div className="card">
+            <label>Place</label>
+            <h4 className="place">{p.title}</h4>
+            <label>Review</label>
+            <p className="desc">{p.desc}</p>
+            <label>Rating</label>
+            <div className="stars">
+              {Array(p.rating).fill(<Star className="star" />)}
+            </div>
+            <label>Information</label>
+            <span className="username">
+              Created by <b>{p.name}</b>
+            </span>
+            <span className="date">{format(p.createdAt)}</span>
+          </div>
+        </Popup>
+      )}
+    </>
+  );
+})}
       
 
     {/* now we have to create a popup for when we click double on map  rating desc title*/}
