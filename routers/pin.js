@@ -4,12 +4,12 @@ const router = express.Router();
 
 
 // create the pinlocation
-router.post('/location',async(req, res, next)=>
+router.post('/location',async(req, res)=>
 {
     
     console.log(req.body);
-    
-
+     
+ 
     try{
         // const [name,title,desc,rating,lat,long] = req.body;
         const getusername = await pinLocation.find({name:req.body.name});
@@ -18,7 +18,7 @@ router.post('/location',async(req, res, next)=>
           const update = { $push: { about: { name:req.body.name,title:req.body.title,desc:req.body.desc,rating:req.body.rating,lat:req.body.lat,long:req.body.long } } };
           const options = { upsert: true, returnOriginal: false };
           const result = await pinLocation.findOneAndUpdate(req.body.name, update, options);
-        //   console.log(result);
+          console.log(result);
           res.status(200).json(result);
         }
         else {
@@ -30,14 +30,14 @@ router.post('/location',async(req, res, next)=>
          
 
     }catch(err)
-    {   console.log(err);
+    {   
         res.status(500).json(err);
     }
 });
 
 //get the pin location
-
-router.get('/getLocation',async(req, res, next)=>
+ 
+router.get('/getLocation',async(req, res)=>
 {
     try
     { 
@@ -50,4 +50,4 @@ router.get('/getLocation',async(req, res, next)=>
     }
 });
 
- export default router;
+ export default router;  

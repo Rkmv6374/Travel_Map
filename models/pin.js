@@ -3,17 +3,17 @@ import  mongoose from  'mongoose';
 const pinSchema = new mongoose.Schema(
     {
         name:{
-            type:String,
+            type:String, 
             require:true,
         },
         about:[{title:
         {
             type:String,
-            require:true,
+            require:true, 
             min:2,
             max:30
         },
-        
+         
         desc:
         {
             type:String,

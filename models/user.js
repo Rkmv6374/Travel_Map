@@ -10,7 +10,7 @@ export const userSchema = new mongoose.Schema(
             
         },
         email:
-        {
+        { 
             type:String,
             max:50,
             required:true,
@@ -20,9 +20,8 @@ export const userSchema = new mongoose.Schema(
         password:
         {
             type:String,
-            
             min:5,max:20,
-            required:true
+            required:true 
         }
     },{timestamps:true}
 );

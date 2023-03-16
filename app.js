@@ -35,7 +35,7 @@ app.use(bodyparser.urlencoded({extended:true}));
 app.use('/pin',pin);
 app.use('/user',user);
 
-
+const port = process.env.PORT||4000;
 app.listen(4040,(err)=>
 {   connection();
     if(err) console.log("error in settling of server !");
