@@ -36,7 +36,7 @@ app.use('/pin',pin);
 app.use('/user',user);
 
 
-app.listen(4040,(err)=>
+app.listen(process.env.PORT||4040,(err)=>
 {   connection();
     if(err) console.log("error in settling of server !");
     else console.log("server is connected !!!!");
